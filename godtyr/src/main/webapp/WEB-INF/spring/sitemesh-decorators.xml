@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<decorators defaultdir="/WEB-INF/views">
+
+    <!-- sitemesh 사용하지 않는 패턴 -->
+    <excludes>
+        <pattern>/*.json</pattern>
+    </excludes>
+    
+    <decorator name="header" page="layout/header.jsp"></decorator>
+    <decorator name="side" page="layout/side.jsp"></decorator>
+    <decorator name="footer" page="layout/footer.jsp"></decorator>
+    <decorator name="layout" page="layout/layout.jsp">
+        <pattern>/*</pattern>
+    </decorator>
+</decorators>

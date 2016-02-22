@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+    http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd"> 
+    
+    
+    
+    <http pattern="/**/*.js" security="none"/>
+    <http pattern="/**/*.css" security="none"/>
+    <http pattern="/images/*" security="none"/>
+    <http auto-config="true"  use-expressions="true">
+        <intercept-url pattern="/passwordEncoder.ib" access="permitAll" />     
+        <intercept-url pattern="/login.ib" access="permitAll" /> 
+        <intercept-url pattern="/**" access="hasRole('ADMIN')"/>     
+        <intercept-url pattern="/admin/**" access="hasRole('ADMIN')"/>  
+        <intercept-url pattern="/manager/**" access="hasRole('MANAGER')"/>      
+        <intercept-url pattern="/chief/**" access="hasRole('CHIEF')"/>   
+        <form-login          
+            username-parameter = "id"
+            password-parameter = "pwd"
+            login-page="/login.ib"
+            default-target-url="/login.ib"             
+            authentication-failure-url="/login.ib?fail=true"             
+        />
+    
+        <!-- 로그아웃 커스터마이징 -->
+		<!--
+		security는 logout.ib의 URL 패턴을 만나면 로그아웃 프로세스를 진행한다.
+		로그아웃시에 세션은 폐기시키며
+		로그아웃이 성공적으로 실행되었을 때 사용자를 /login.jsp 페이지로 이동시킨다.
+		-->
+		<logout invalidate-session="true" logout-url="/logout.ib" logout-success-url="/list.ib" delete-cookies="JSESSIONID,JSESSIONID"></logout>
+        <!-- enable csrf protection --> 
+        <csrf />
+    </http>
+    
+    
+	<!-- 비밀번호 암호화 -->  
+    <beans:bean id="standardPasswordEncoder" class="org.springframework.security.crypto.password.StandardPasswordEncoder" />  
+
+	<authentication-manager>
+	    <authentication-provider user-service-ref="customJdbcDaoImpl">
+	       <password-encoder ref="standardPasswordEncoder" />   
+        </authentication-provider>  
+	</authentication-manager>
+	
+	<beans:bean id="customJdbcDaoImpl" class="net.infobank.ibwork.dao.CustomJdbcDaoImpl">
+	    <beans:property name="dataSource" ref="ibworkDB" />
+	    <beans:property name="rolePrefix" value="" />
+	    <beans:property name="usersByUsernameQuery" value="SELECT idx, id, `password`, `name`, dept FROM `user` WHERE id=? AND `use` ='Y'" />
+	    <beans:property name="authoritiesByUsernameQuery" value="SELECT role FROM user_role WHERE user_idx=?" />
+	    <beans:property name="enableGroups" value="false" />
+	</beans:bean> 
+	
+	
+    
+
+	
+</beans:beans>

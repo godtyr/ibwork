@@ -1,0 +1,113 @@
+apply plugin: 'java'
+apply plugin: 'eclipse-wtp'
+apply plugin: 'war'
+
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+version = '1.0'
+
+
+def version = [
+spring: '4.1.6.RELEASE',
+spring_security: '3.2.7.RELEASE',
+servletAPI: '3.1.0',
+commonsCollections: '3.2.1',
+junit: '4.12',
+log4j: '1.2.17',
+slf4j: '1.7.5',
+log4jdbc_remix: '0.2.7',
+mybatis: '3.3.0',
+mybatis_spring: '1.2.3',
+dbcp: '1.4',
+jstl: '1.2',
+mysql_connector_java: '5.1.38',
+poi: '3.13',
+sitemesh: '2.4.2',
+lucy_xss: '1.6.3',
+lucy_xss_servlet: '2.0.0'
+
+
+]
+
+eclipse {
+   
+    project.natures "org.springsource.ide.eclipse.gradle.core.nature"
+    wtp {
+        facet {
+            facet name: 'jst.web', version: '3.1'
+            facet name: 'jst.java', version: '1.8'
+        }
+    }
+}
+
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Gradle Quickstart',
+                   'Implementation-Version': version
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+   
+    providedCompile "javax.servlet:javax.servlet-api:${version.servletAPI}" 
+    compile "javax.servlet:jstl:${version.jstl}" 
+    
+    compile "org.springframework:spring-webmvc:${version.spring}" 
+    compile "org.springframework:spring-tx:${version.spring}" 
+    compile "org.springframework:spring-jdbc:${version.spring}" 
+    
+    compile "org.springframework.security:spring-security-core:${version.spring_security}" 
+    compile "org.springframework.security:spring-security-web:${version.spring_security}" 
+    compile "org.springframework.security:spring-security-config:${version.spring_security}" 
+    compile "org.springframework.security:spring-security-taglibs:${version.spring_security}"    
+    
+     
+    compile "org.mybatis:mybatis:${version.mybatis}"
+    compile "org.mybatis:mybatis-spring:${version.mybatis_spring}"
+    
+    compile "commons-dbcp:commons-dbcp:${version.dbcp}"
+    
+    compile "mysql:mysql-connector-java:${version.mysql_connector_java}" 
+    
+    compile "log4j:log4j:${version.log4j}"    
+    compile "org.slf4j:slf4j-log4j12:${version.slf4j}" 
+    
+    compile "org.lazyluke:log4jdbc-remix:${version.log4jdbc_remix}"
+    
+    compile "com.fasterxml.jackson.core:jackson-core:2.3.0"
+    compile "com.fasterxml.jackson.core:jackson-databind:2.3.0"
+    
+    compile "org.apache.poi:poi:${version.poi}"
+    compile "org.apache.poi:poi-ooxml:${version.poi}" 
+    
+    compile "opensymphony:sitemesh:${version.sitemesh}"
+    
+    compile "com.navercorp.lucy:lucy-xss:${version.lucy_xss}"
+    compile "com.navercorp.lucy:lucy-xss-servlet:${version.lucy_xss_servlet}"
+    
+    
+    compile group: 'commons-collections', name: 'commons-collections', version: "${version.commonsCollections}"
+    
+    testCompile group: 'junit', name: 'junit', version: "${version.junit}"
+    
+}
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8' 
+
+test {
+    systemProperties 'property': 'value'
+}
+
+uploadArchives {
+    repositories {
+       flatDir {
+           dirs 'repos'
+       }
+    }
+}
